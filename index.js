@@ -18,6 +18,12 @@ $(document).ready(() => {
 
       $("#title").text(fetched_data.source_name);
 
+      const svg = d3
+        .select("#main")
+        .append("svg")
+        .attr("height", 500)
+        .attr("width", 500);
+
       const min = parseInt(fetched_data.from_date.split("-")[0]);
       const max = parseInt(fetched_data.to_date.split("-")[0]);
 
@@ -29,6 +35,7 @@ $(document).ready(() => {
         .range([min - 5, max + 5]);
 
       const xAxis = d3.axisBottom(xScale);
-      
+
+      svg.append("g").attr("id","x-axis").attr("transform","translate(0,"+450+")");
     });
 });
