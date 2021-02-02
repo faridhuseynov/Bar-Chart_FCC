@@ -1,13 +1,13 @@
 var url =
   "https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/GDP-data.json";
 
+const height = 700;
+const width = 900;
+const padding = 60;
+
 var fetched_data = [];
 $(document).ready(() => {
-  const svg = d3
-    .select("#main")
-    .append("svg")
-    .attr("width", 500)
-    .attr("height", 500);
+
 
   fetch(url)
     .then((response) => response.json())
@@ -19,23 +19,47 @@ $(document).ready(() => {
       $("#title").text(fetched_data.source_name);
 
       const svg = d3
-        .select("#main")
+        .select(".chart")
         .append("svg")
-        .attr("height", 500)
-        .attr("width", 500);
+        .attr("height", width)
+        .attr("width", height);
 
-      const min = parseInt(fetched_data.from_date.split("-")[0]);
-      const max = parseInt(fetched_data.to_date.split("-")[0]);
+      const from =   fetched_data.from_date;
+      const to = fetched_data.to_date;
+      const length = fetched_data.data.length;
 
-      console.log(min, max);
+      const min_year = parseInt(fetched_data.from_date.split("-")[0]);
+      const max_year = parseInt(fetched_data.to_date.split("-")[0]);
+
+      const min_gdp = parseInt(fetched_data.data[0][1]);
+      const max_gdp = parseInt(fetched_data.data[length-1][1]);
+
+      console.log(min_year, max_year);
+      console.log(min_gdp, max_gdp);
 
       const xScale = d3
         .scaleLinear()
-        .domain([min, max])
-        .range([min - 5, max + 5]);
+        .domain([min_year, max_year])
+        .range([padding, width-padding]);
+
+      const yScale = d3
+        .scaleLinear()
+        .domain([min_gdp, max_gdp])
+        .range([height-padding,padding]);
 
       const xAxis = d3.axisBottom(xScale);
+      const yAxis = d3.axisLeft(yScale);
 
-      svg.append("g").attr("id","x-axis").attr("transform","translate(0,"+450+")");
+      svg
+        .append("g")
+        .attr("id", "x-axis")
+        .attr("transform", "translate(0," + (height - padding) + ")")
+        .call(xAxis);
+
+      svg
+        .append("g")
+        .attr("id", "y-axis")
+        .attr("transform", "translate(" + padding + ",0)")
+        .call(yAxis);
     });
 });
