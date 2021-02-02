@@ -35,8 +35,8 @@ $(document).ready(() => {
       // const min_year = fetched_data.from_date;
       // const max_year = fetched_data.to_date;
 
-      const min_gdp = parseInt(fetched_data.data[0][1]);
-      const max_gdp = parseInt(fetched_data.data[length-1][1]);
+      const min_gdp = parseInt(d3.min(dataset,d=>d[1]));
+      const max_gdp = parseInt(d3.max(dataset,d=>d[1]));
 
       console.log(min_year, max_year);
       console.log(min_gdp, max_gdp);
