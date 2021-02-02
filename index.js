@@ -24,12 +24,16 @@ $(document).ready(() => {
         .attr("height", width)
         .attr("width", height);
 
+      const dataset = fetched_data.data;
       const from =   fetched_data.from_date;
       const to = fetched_data.to_date;
       const length = fetched_data.data.length;
 
-      const min_year = parseInt(fetched_data.from_date.split("-")[0]);
-      const max_year = parseInt(fetched_data.to_date.split("-")[0]);
+      const min_year = parseInt(from.split("-")[0]);
+      const max_year = parseInt(to.split("-")[0]);
+
+      // const min_year = fetched_data.from_date;
+      // const max_year = fetched_data.to_date;
 
       const min_gdp = parseInt(fetched_data.data[0][1]);
       const max_gdp = parseInt(fetched_data.data[length-1][1]);
@@ -61,5 +65,13 @@ $(document).ready(() => {
         .attr("id", "y-axis")
         .attr("transform", "translate(" + padding + ",0)")
         .call(yAxis);
+
+      svg
+        .selectAll("rect")
+        .data(dataset)
+        .enter()
+        .append("rect")
+        .attr("x", (d) => xScale(d[0].split("-")[0]))
+        .attr("y", (d) => yScale(d[1]));
     });
 });
