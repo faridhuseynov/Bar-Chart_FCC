@@ -72,17 +72,19 @@ $(document).ready(() => {
       // var month=0;
       // var day=0;
       
+      console.log(max_gdp);
       svg
         .selectAll("rect")
         .data(dataset)
         .enter()
         .append("rect")
+        .attr("fill","green")
         .attr("x", (d,i) =>{
           // return ((d[0].split("-")[0])+i*3);
           return padding+i*3;
         })
-        .attr("y", (d) => (yScale(d[1])))
-        .attr("height", ((d) => max_gdp-[d[1]]))
+        .attr("y", (d) => yScale(max_gdp-(d[1])))
+        .attr("height", ((d) => yScale([d[1]])))
         .attr("width", 2);
         console.log(dataset);
     });
