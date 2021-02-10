@@ -5,6 +5,24 @@ const height = 500;
 const width = 1000;
 const padding = 50;
 
+function  setData(element){
+  var quarter;
+  var date = new Date(element[0]);
+  var year = date.getFullYear();
+  var gdp = element[1];
+  var month = date.getMonth();
+  if(month<3){
+    quarter="Q1";
+  }else if(month<6){
+    quarter="Q2";
+  }else if(month<9){
+    quarter = "Q3";
+  }else{
+    quarter="Q4";
+  }
+  return (year+"\n"+quarter+"\n"+"$"+gdp+"Billion");
+}
+
 var fetched_data = [];
 $(document).ready(() => {
   fetch(url)
@@ -12,9 +30,11 @@ $(document).ready(() => {
     .then((data) => {
       fetched_data = data;
 
-      // console.log(fetched_data);
-
-      $("#title").text(fetched_data.source_name);
+      var div = d3.select(".chart")
+                      .append("div")
+                      .attr("id","tooltip")
+                      .attr("class","infobox")
+                      .style("opacity","0")
 
       const svg = d3
         .select(".chart")
@@ -53,15 +73,17 @@ $(document).ready(() => {
       svg
         .append("g")
         .attr("id", "x-axis")
+        .style("font","13px Ubuntu")
         .attr("transform", "translate(0," + (height-padding) + ")")
         .call(xAxis);
 
       svg
         .append("g")
         .attr("id", "y-axis")
+        .style("font","13px Ubuntu")
         .attr("transform", "translate(" + padding + ",0)")
         .call(yAxis);
-
+                    
       svg
         .selectAll("rect")
         .data(dataset)
@@ -75,11 +97,28 @@ $(document).ready(() => {
           return yScale((d[1]))          
         })
         .attr("height", ((d) =>{
-          console.log(height-padding- yScale(d[1]));
           return height - padding - yScale([d[1]])
         })) 
-        .attr("width", bar_width);
-
-        // console.log(dataset);
+        .attr("width", bar_width*12)
+        .attr("class","bar")
+        .attr("data-date",d=>d[0])
+        .attr("data-gdp",d=>d[1])
+        .on("mouseover", (event,element) => {
+          div.transition()
+            .duration(50)
+            .style("opacity",0.9)
+            .style("top",(height+60+"px"))
+            .style("left",event.pageX+"px")
+            .attr("data-date",element[1])
+            .text(
+              ()=>setData(element)
+              );
+            
+         })
+         .on("mouseout",()=>{
+           div.transition()
+              .duration(100)
+              .style("opacity",0)
+         });
     });
 });
